@@ -1,0 +1,52 @@
+name: iOS CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios-ci.yml'
+
+jobs:
+  build-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install CocoaPods
+        working-directory: ios
+        run: |
+          gem install cocoapods
+          pod install --repo-update
+      - name: Build & Test
+        run: xcodebuild \
+              -workspace ios/F1Insights.xcworkspace \
+              -scheme F1Insights \
+              -sdk iphonesimulator \
+              -destination 'platform=iOS Simulator,name=iPhone 14' \
+              test | xcpretty
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build-test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Archive
+        run: xcodebuild \
+              -workspace ios/F1Insights.xcworkspace \
+              -scheme F1Insights \
+              -configuration Release \
+              -archivePath ${{ runner.temp }}/F1Insights.xcarchive \
+              archive
+      - name: Upload to TestFlight
+        uses: appleboy/app-store-release@v1
+        with:
+          api_key_id: ${{ secrets.APP_STORE_KEY_ID }}
+          api_issuer_id: ${{ secrets.APP_STORE_ISSUER_ID }}
+          key: ${{ secrets.APP_STORE_KEY }}
+          ipa: ${{ runner.temp }}/F1Insights.xcarchive/Products/Applications/F1Insights.app

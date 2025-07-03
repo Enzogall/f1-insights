@@ -1,0 +1,26 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment virtuel
+venv/
+.venv/
+env/
+
+# FastF1 cache
+cache/
+
+# Outils de test
+.pytest_cache/
+htmlcov/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+
+# Linter
+.flake8*
+
+# SQLite
+*.sqlite3

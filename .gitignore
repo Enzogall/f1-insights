@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+
+# Éditeurs / IDE
+.vscode/
+.idea/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+*.log
+
+# Environnements secrets
+.env
+.env.local
+
+# Node (global)
+node_modules/
+**/node_modules/
+
+# Coverage
+coverage/
+
+# Builds génériques
+dist/
+build/
+
+# SPM / Swift
+.build/
+Packages/
+
+# Carthage
+Carthage/Build/
+
+# CocoaPods
+Pods/
